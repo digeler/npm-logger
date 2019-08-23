@@ -8,7 +8,7 @@ Detail instructions :
 2. Edit the newyaml.yaml so it will match your cluster name (see remark on yaml)
 3. Run kubectl create -f newyaml.yaml
 4. Place your cluster config file in the root of the shared storage account
-5. Dait untill the pod reports completed.
+5. Wait untill the pod reports completed.
 6. Download the data and provide to support
 7. Delete the daemonset by kubectl delete -f newyaml.yaml
 
