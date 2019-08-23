@@ -68,7 +68,7 @@ spec:
                   apiVersion: v1
                   fieldPath: spec.nodeName
             - name: clustername
-              value: olverstest 
+              value: [your cluster name] 
           volumeMounts:
           - name: xtables-lock
             mountPath: /run/xtables.lock
