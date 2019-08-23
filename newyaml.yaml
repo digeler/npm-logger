@@ -57,7 +57,7 @@ spec:
        
       containers:
         - name: azure-npm-logger
-          image: dinorg/npm-logger:v1
+          image: dinorg/npm-logger:v2
           imagePullPolicy: Always
           securityContext:
             privileged: true
@@ -67,6 +67,8 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
+            - name: clustername
+              value: olverstest 
           volumeMounts:
           - name: xtables-lock
             mountPath: /run/xtables.lock
