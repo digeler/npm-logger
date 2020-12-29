@@ -12,7 +12,7 @@ RUN apt-get update && \
 WORKDIR /usr/bin
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
 RUN chmod +x ./kubectl
-COPY collector.sh /usr/bin/collector.sh
-RUN chmod +x /usr/bin/collector.sh 
-CMD [ "collector.sh" ]
+COPY collect.sh /usr/bin/collect.sh
+RUN chmod +x /usr/bin/collect.sh 
+CMD [ "collect.sh" ]
 
