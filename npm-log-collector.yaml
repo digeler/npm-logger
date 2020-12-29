@@ -1,3 +1,44 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: npm-log-collector
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: npm-log-collector
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - services
+    verbs:
+      - list
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+    - networkpolicies
+    verbs:
+    - list
+---
+  apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: npm-log-collector
+    namespace: npm-log-collector
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: npm-log-collector
+  namespace: npm-log-collector
+subjects:
+  - kind: ServiceAccount
+    name: npm-log-collector
+    namespace: npm-log-collector
+roleRef:
+  kind: ClusterRole
+  name: npm-log-collector
+  apiGroup: rbac.authorization.k8s.io
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
@@ -12,12 +53,11 @@ mountOptions:
 parameters:
   skuName: Standard_LRS
 ---
-
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: azurefile
-  namespace: kube-system
+  namespace: npm-log-collector
 spec:
   accessModes:
     - ReadWriteMany
@@ -26,17 +66,13 @@ spec:
     requests:
       storage: 100Gi
 ---
-
-
-
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: azure-npm-logger
-  namespace: kube-system
+  namespace: npm-log-collector
   labels:
     app: azure-npm-logger-logger
-    
 spec:
   selector:
     matchLabels:
@@ -48,13 +84,12 @@ spec:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
-      
+      serviceAccountName: npm-log-collector
       tolerations:
       - key: CriticalAddonsOnly
         operator: Exists
       nodeSelector:
         beta.kubernetes.io/os: linux
-       
       containers:
         - name: azure-npm-logger
           image: dinorg/npm-logger:v2
@@ -68,7 +103,7 @@ spec:
                   apiVersion: v1
                   fieldPath: spec.nodeName
             - name: clustername
-              value: [your cluster name] 
+              value: npm-dns
           volumeMounts:
           - name: xtables-lock
             mountPath: /run/xtables.lock
@@ -80,7 +115,6 @@ spec:
             mountPath: /tmp
           - name: logcollector
             mountPath: /mnt/npmlogs  
-       
       hostNetwork: true
       volumes:
       - name: log

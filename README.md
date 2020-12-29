@@ -12,8 +12,6 @@ Detail instructions :
 6. Download the data and provide to support
 7. Delete the daemonset by kubectl delete -f newyaml.yaml
 
-
-
 collects :
 
 iptables -L -t filter -n 
