@@ -1,5 +1,8 @@
-mkdir $HOSTNAME
+#!/bin/bash
+
 HOSTDIR=/mnt/npmlogs/$HOSTNAME
+COMPRESSEDFILE=${HOSTDIR}.tar.gz
+mkdir -p $HOSTDIR
 
 echo "logs will be stored in $HOSTDIR"
 echo "start to collect log: $(date)" >> $HOSTDIR/date.txt
@@ -31,15 +34,13 @@ kubectl version >> $HOSTDIR/cluserinfo
 
 echo "finished to collect log: $(date)" >> $HOSTDIR/date.txt
 
-echo "compress log into $HOSTNAME.tar.gz"
-tar -czvf $HOSTNAME.tar.gz $HOSTDIR
+echo "compress log into $COMPRESSEDFILE"
+tar -czvf $COMPRESSEDFILE $HOSTDIR
+rm -rf $HOSTDIR
 
 while $(true)
 do 
 echo "completed collecting logs, do not delete the logger till you copied the files"
 sleep 40
 done
-
-
-
 
